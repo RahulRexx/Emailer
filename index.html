@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base target="_top">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script>
+        function onSuccess(listOfEmails) {
+            var div = document.getElementById('output');
+            div.innerHTML = "";
+            for (var i = 0; i < listOfEmails.length; i++) {
+                div.innerHTML += "<p>" + listOfEmails[i] + "</p>";
+            }
+            if (listOfEmails.length === 0) {
+                div.innerHTML = "<b> Sorry No Emails selected!</b>";
+            }
+            else {
+                div.innerHTML += "</hr>"
+                var list = document.getElementsByTagName("p");
+                for (i = 0; i < list.length; i++) {
+                    list[i].style.backgroundColor = "#DCDCDC";
+                    list[i].style.borderRadius = "15px";
+                    list[i].style.textAlign = "center";
+                    list[i].style.padding = "2px 0 2px";
+                    list[i].style.margin = "1px 0 1px";
+                }
+            }
+
+        }
+
+        google.script.run.withSuccessHandler(onSuccess).getEmails();
+
+
+        function sendEmails() {
+            var subject = document.getElementById("subject").value;
+            var body = document.getElementById("body").value;
+            //         google.script.run.sendEmails(subject,body);
+
+
+            function viewClear(val) {
+                if (val == 1) {
+                    document.getElementById('subject').value = "";
+                    document.getElementById('body').value = "";
+                    document.getElementById('send').value = "Email Sent";
+                    document.getElementById('send').classList.remove("btn-warning");
+                    document.getElementById('send').classList.add("btn-success");
+                }
+                else {
+                    document.getElementById('send').value = "Send";
+                    document.getElementById('send').classList.remove("btn-warning");
+                    document.getElementById('send').classList.add("btn-primary");
+                    var div = document.getElementById('output');
+                    div.innerHTML = "<b> Sorry, No recipient selected </b>";
+                }
+
+
+            }
+            document.getElementById('send').value = "Sending Email...";
+            document.getElementById('send').classList.remove("btn-primary");
+            document.getElementById('send').classList.add("btn-warning");
+            google.script.run.withSuccessHandler(viewClear).sendEmails(subject, body);
+        }
+
+
+
+    </script>
+</head>
+
+<body>
+    <div class="container" id="output">Loading Emails ...</div>
+    <div class="container">
+        <form>
+            <div class="form-group">
+                <label for="subject">Subject</label>
+                <input class="form-control" type="text" name="subject" id="subject" required />
+            </div>
+
+            <div class="form-group">
+                <label for="body">Body</label>
+                <textarea type="text" id="body" name="body" rows="2" class="form-control"></textarea>
+            </div>
+
+            <div class="form-group">
+                <input type="button" class="btn btn-primary btn-block form-control" value="Send Email" id="send"
+                    onclick="sendEmails()" />
+            </div>
+
+        </form>
+    </div>
+
+
+</body>
+
+</html>
